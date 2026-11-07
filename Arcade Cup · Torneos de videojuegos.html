@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arcade Cup · Torneos de videojuegos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<style>
+:root{--bg:#f2e9ff;--panel:#fff;--ink:#1a0b3d;--mut:#5b4a8a;--pk:#d6006f;--cy:#006f8a;--yl:#b38600;--gr:#0a8a00;--ln:#1a0b3d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0420;--panel:#170a38;--ink:#f4eaff;--mut:#a38fd0;--pk:#ff2e97;--cy:#00e5ff;--yl:#ffe600;--gr:#39ff14;--ln:#5b34c4}}
+:root[data-theme="dark"]{--bg:#0b0420;--panel:#170a38;--ink:#f4eaff;--mut:#a38fd0;--pk:#ff2e97;--cy:#00e5ff;--yl:#ffe600;--gr:#39ff14;--ln:#5b34c4}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:22px/1.25 'VT323','Courier New',monospace;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:40px 40px;background-attachment:fixed}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.12) 2px 3px)}
+.px{font-family:'Press Start 2P','Courier New',monospace;line-height:1.5}
+main{max-width:1100px;margin:0 auto;padding:16px}
+header{text-align:center;padding:28px 8px 10px}
+.coin{color:var(--yl);font-size:11px;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.coin{animation:none}}
+h1{font-size:clamp(20px,5vw,40px);margin:14px 0;color:var(--pk);text-shadow:4px 4px 0 var(--cy);word-break:break-word}
+#sub{color:var(--mut);font-size:26px;margin:0}
+.panel{background:var(--panel);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--pk);padding:18px;margin:22px 0}
+h2{font-size:13px;color:var(--cy);margin:0 0 14px}
+label{display:block;color:var(--mut);margin:8px 0 4px}
+input[type=text]{width:100%;background:var(--bg);color:var(--ink);border:3px solid var(--ink);padding:8px 10px;font:inherit;font-size:24px}
+input:focus,button:focus-visible{outline:3px solid var(--yl);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 200px}
+.btn{font:11px/1.4 'Press Start 2P','Courier New',monospace;background:var(--yl);color:#1a0b3d;border:3px solid var(--ink);padding:12px 14px;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.alt{background:var(--panel);color:var(--ink)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.fmts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.fmt{text-align:left;background:var(--bg);color:var(--ink);border:3px solid var(--ln);padding:12px;cursor:pointer;font:inherit}
+.fmt b{display:block;font:10px/1.6 'Press Start 2P','Courier New',monospace;color:var(--cy);margin-bottom:6px}
+.fmt.on{border-color:var(--gr);box-shadow:4px 4px 0 var(--gr)}.fmt.on b{color:var(--gr)}
+#plist{list-style:none;margin:14px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+#plist li{display:flex;justify-content:space-between;gap:8px;border:3px solid var(--ln);background:var(--bg);padding:4px 8px}
+#plist li span{overflow:hidden;text-overflow:ellipsis}
+#plist button{background:none;border:0;color:var(--pk);font:inherit;cursor:pointer}
+.hint{color:var(--mut);margin:6px 0}
+.chk{display:flex;gap:8px;align-items:center;margin:10px 0}.chk input{width:20px;height:20px;accent-color:var(--pk)}
+.scroll{overflow-x:auto;padding-bottom:10px}
+.rounds{display:flex;gap:26px;min-width:min-content}
+.col{display:flex;flex-direction:column;min-width:210px}
+.col h4{font:9px/1.4 'Press Start 2P','Courier New',monospace;color:var(--yl);margin:0 0 10px;text-align:center}
+.ms{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:12px}
+.m{border:3px solid var(--ln);background:var(--bg)}
+.p{padding:5px 8px;border-bottom:2px solid var(--ln);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:34px}
+.p:last-child{border:0}
+.p.can{cursor:pointer}.p.can:hover{background:var(--ln);color:#fff}
+.p.win{color:#1a0b3d;background:var(--gr);font-weight:bold}.p.lose{color:var(--mut);text-decoration:line-through}
+.p.pend{color:var(--mut)}
+h3{font:11px/1.5 'Press Start 2P','Courier New',monospace;color:var(--pk);margin:22px 0 10px}
+table{border-collapse:collapse;width:100%;max-width:520px}
+th,td{border-bottom:2px solid var(--ln);padding:4px 8px;text-align:left}th{color:var(--yl);font-weight:normal}
+td:nth-child(n+3),th:nth-child(n+3){text-align:center}
+tr:first-child td:nth-child(2){color:var(--gr)}
+.champ{text-align:center;color:var(--yl);font-size:14px;border:4px dashed var(--yl);padding:18px;margin:14px 0;text-shadow:3px 3px 0 var(--pk)}
+.gm{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:12px}
+</style></head>
+<body><main>
+<header><div class="coin px">★ INSERT COIN ★</div>
+<h1 class="px" id="ttl">ARCADE CUP</h1><p id="sub">Inscribe jugadores, elige formato y que empiece la partida</p></header>
+
+<section class="panel" id="setup">
+<h2 class="px">1 · DATOS DEL TORNEO</h2>
+<div class="row"><div><label for="tin">Nombre del torneo</label><input type="text" id="tin" maxlength="30" value="ARCADE CUP"></div>
+<div><label for="gin">Videojuego</label><input type="text" id="gin" maxlength="30" placeholder="Ej: Street Fighter 6"></div></div>
+<h2 class="px" style="margin-top:26px">2 · FORMATO</h2><div class="fmts" id="fmts"></div><p class="hint" id="fhint"></p>
+<h2 class="px" style="margin-top:26px">3 · INSCRIPCIÓN DE JUGADORES</h2>
+<div class="row" style="flex-wrap:nowrap"><input type="text" id="pin" maxlength="20" placeholder="Nombre o tag del jugador" aria-label="Nombre del jugador" style="flex:1 1 auto"><button class="btn" id="add" style="flex:0 0 auto">+ AÑADIR</button></div>
+<p class="hint" id="cnt"></p><ul id="plist"></ul>
+<div class="row"><button class="btn alt" id="demo">CARGAR 8 DE PRUEBA</button><button class="btn alt" id="clr">VACIAR LISTA</button></div>
+<div class="chk"><input type="checkbox" id="shf" checked><label for="shf" style="margin:0">Sorteo aleatorio de posiciones</label></div>
+<button class="btn" id="go" style="width:100%;font-size:14px;padding:16px">▶ START · COMENZAR TORNEO</button>
+</section>
+
+<section id="torneo" hidden>
+<div class="row"><button class="btn alt" id="back">◀ EDITAR INSCRITOS</button><button class="btn alt" id="rst">↻ BORRAR RESULTADOS</button></div>
+<p class="hint">Toca el nombre del ganador de cada partida para registrar el resultado. Tócalo otra vez para deshacerlo.</p>
+<div id="out"></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s),e=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const F={single:['ELIMINACIÓN DIRECTA','Pierdes y quedas fuera. Rápido y emocionante.',2],double:['DOBLE ELIMINACIÓN','Hay que perder dos veces. Bracket de perdedores y gran final.',4],groups:['GRUPOS + ELIMINATORIAS','Fase de grupos; los 2 mejores pasan a eliminatorias.',6],league:['LIGA TODOS CONTRA TODOS','Todos juegan contra todos; gana quien suma más victorias.',3]};
+let S={players:[],fmt:'single',results:{},started:false,title:'ARCADE CUP',game:''},cur=null;
+try{const x=JSON.parse(localStorage.getItem('arcade')||'null');if(x&&x.players)S=x}catch(_){}
+const save=()=>{try{localStorage.setItem('arcade',JSON.stringify(S))}catch(_){}};
+
+function seeds(P){let s=[1];while(s.length<P)s=s.flatMap(x=>[x,2*s.length+1-x]);return s}
+function compute(M,by){
+ M.forEach(m=>{m.a=m.ia;m.b=m.ib;m.w=undefined;m.bye=0});
+ M.forEach(m=>{
+  if(m.a!==undefined&&m.b!==undefined){
+   if(m.a===null||m.b===null){m.w=m.a===null?m.b:m.a;m.bye=1}
+   else if(S.results[m.id]===m.a||S.results[m.id]===m.b)m.w=S.results[m.id];
+  }
+  if(m.w!==undefined){const l=m.w===null?null:(m.w===m.a?m.b:m.a);
+   if(m.wn)by[m.wn[0]][m.wn[1]?'b':'a']=m.w;
+   if(m.ln)by[m.ln[0]][m.ln[1]?'b':'a']=l}
+ })}
+function elim(list,dbl){
+ const n=list.length;let P=2;while(P<n)P*=2;const k=Math.log2(P),sd=seeds(P),M=[],by={};
+ dbl=dbl&&k>=2;
+ const add=(id,br,r,lab)=>{const m={id,br,r,lab};M.push(m);by[id]=m;return m};
+ const v=x=>x<n?list[x]:null;
+ for(let r=1;r<=k;r++)for(let i=0;i<P/2**r;i++){
+  const m=add('W'+r+'-'+i,'W',r,r==k?(dbl?'FINAL W':'FINAL'):r==k-1?'SEMIFINAL':'RONDA '+r);
+  m.wn=r<k?['W'+(r+1)+'-'+(i>>1),i&1]:(dbl?['GF',0]:null);
+  if(dbl)m.ln=r==1?['L1-'+(i>>1),i&1]:['L'+2*(r-1)+'-'+i,1];
+  if(r==1){m.ia=v(sd[2*i]-1);m.ib=v(sd[2*i+1]-1)}}
+ if(dbl){const T=2*(k-1);
+  for(let l=1;l<=T;l++)for(let i=0;i<P/2**(Math.ceil(l/2)+1);i++){
+   const m=add('L'+l+'-'+i,'L',l,l==T?'FINAL L':'LB '+l);
+   m.wn=l==T?['GF',1]:l%2?['L'+(l+1)+'-'+i,0]:['L'+(l+1)+'-'+(i>>1),i&1]}
+  add('GF','G',1,'GRAN FINAL')}
+ compute(M,by);return{M,by}}
+function rr(list,pre){const M=[],by={};
+ for(let i=0;i<list.length;i++)for(let j=i+1;j<list.length;j++){const m={id:pre+i+'-'+j,br:'G',r:0,ia:list[i],ib:list[j]};M.push(m);by[m.id]=m}
+ compute(M,by);return{M,by}}
+function stand(list,M){const o={};list.forEach(p=>o[p]={n:p,w:0,p:0});
+ M.forEach(m=>{if(m.w){o[m.a].p++;o[m.b].p++;o[m.w].w++}});
+ return list.map(p=>o[p]).sort((a,b)=>b.w-a.w||(b.p-a.p))}
+function build(){
+ const P=S.players,f=S.fmt;
+ if(f=='single'||f=='double')return{tables:[],el:elim(P,f=='double')};
+ if(f=='league'){const r=rr(P,'R');return{tables:[{t:'CLASIFICACIÓN',r,st:stand(P,r.M)}],el:null,league:1}}
+ const g=Math.max(2,Math.round(P.length/4)),G=Array.from({length:g},()=>[]);
+ P.forEach((p,i)=>{const q=i%(2*g);G[q<g?q:2*g-1-q].push(p)});
+ const tables=G.map((l,i)=>{const r=rr(l,'G'+i+'-');return{t:'GRUPO '+String.fromCharCode(65+i),r,st:stand(l,r.M)}});
+ const done=tables.every(t=>t.r.M.every(m=>m.w!==undefined));
+ let list=Array(2*g).fill(undefined);
+ if(done)list=[...tables.map(t=>t.st[0].n),...tables.map(t=>t.st[1].n)];
+ return{tables,el:elim(list,false)}}
+function card(m){
+ const ok=m.a&&m.b,row=(p,s)=>{
+  const c=p===undefined||p===null?'pend':m.w===p?'win':m.w!==undefined?'lose':'';
+  return`<div class="p ${c}${ok?' can':''}" data-m="${m.id}" data-s="${s}">${p===undefined?'···':p===null?'BYE':e(p)}</div>`};
+ return`<div class="m">${row(m.a,'a')}${row(m.b,'b')}</div>`}
+function bracket(M,br,title){
+ const ms=M.filter(m=>br.includes(m.br));if(!ms.length)return'';
+ const rs=[...new Set(ms.map(m=>m.r))];
+ return(title?`<h3>${title}</h3>`:'')+`<div class="scroll"><div class="rounds">`+rs.map(r=>{const c=ms.filter(m=>m.r==r);
+  return`<div class="col"><h4>${c[0].lab}</h4><div class="ms">${c.map(card).join('')}</div></div>`}).join('')+`</div></div>`}
+function render(){
+ const b=build();cur=b;let h='',champ;
+ if(b.league){const t=b.tables[0];if(t.r.M.every(m=>m.w!==undefined))champ=t.st[0].n}
+ if(b.el)champ=b.el.M[b.el.M.length-1].w||undefined;
+ if(champ)h+=`<div class="champ px">🏆 CAMPEÓN 🏆<br><br>${e(champ)}</div>`;
+ b.tables.forEach(t=>{
+  h+=`<h3>${t.t}</h3><table><tr><th>#</th><th>JUGADOR</th><th>PJ</th><th>V</th></tr>${t.st.map((s,i)=>`<tr><td>${i+1}</td><td>${e(s.n)}</td><td>${s.p}</td><td>${s.w}</td></tr>`).join('')}</table>
+  <div class="gm">${t.r.M.map(card).join('')}</div>`});
+ if(b.el){const d=S.fmt=='double'&&b.el.M.some(m=>m.br=='L');
+  h+=bracket(b.el.M,['W'],d?'BRACKET DE GANADORES':S.fmt=='groups'?'ELIMINATORIAS':'')+bracket(b.el.M,['L'],'BRACKET DE PERDEDORES')+bracket(b.el.M,['G'],'')}
+ $('#out').innerHTML=h;save()}
+$('#out').addEventListener('click',ev=>{
+ const t=ev.target.closest('.can');if(!t)return;
+ const id=t.dataset.m,m=[...cur.tables.flatMap(x=>x.r.M),...(cur.el?cur.el.M:[])].find(x=>x.id==id),n=t.dataset.s=='a'?m.a:m.b;
+ if(S.results[id]===n)delete S.results[id];else S.results[id]=n;render()});
+
+function head(){$('#ttl').textContent=(S.title||'ARCADE CUP').toUpperCase();document.title=S.title+' · Torneo';
+ $('#sub').textContent=S.game?'Juego: '+S.game:'Inscribe jugadores, elige formato y que empiece la partida'}
+function list(){
+ $('#plist').innerHTML=S.players.map((p,i)=>`<li><span>${i+1}. ${e(p)}</span><button data-i="${i}" aria-label="Quitar ${e(p)}">✕</button></li>`).join('');
+ const min=F[S.fmt][2],n=S.players.length;
+ $('#cnt').textContent=n+' inscrito'+(n==1?'':'s')+' · mínimo '+min+' para este formato';
+ $('#go').disabled=n<min;
+ $('#fmts').innerHTML=Object.entries(F).map(([k,v])=>`<button class="fmt${k==S.fmt?' on':''}" data-k="${k}"><b>${v[0]}</b>${v[1]}</button>`).join('');save()}
+function add(){const i=$('#pin'),v=i.value.trim();if(!v)return;
+ if(S.players.some(p=>p.toLowerCase()==v.toLowerCase())){$('#cnt').textContent='¡Ese jugador ya está inscrito!';return}
+ if(S.players.length>=64)return;S.players.push(v);i.value='';i.focus();list()}
+$('#add').onclick=add;$('#pin').onkeydown=ev=>{if(ev.key=='Enter')add()};
+$('#plist').onclick=ev=>{const b=ev.target.closest('button');if(b){S.players.splice(+b.dataset.i,1);list()}};
+$('#fmts').onclick=ev=>{const b=ev.target.closest('.fmt');if(b){S.fmt=b.dataset.k;S.results={};list()}};
+$('#tin').oninput=ev=>{S.title=ev.target.value;head();save()};$('#gin').oninput=ev=>{S.game=ev.target.value;head();save()};
+$('#demo').onclick=()=>{S.players=['Ryu','Chun-Li','Ken','Zangief','Blanka','Guile','Dhalsim','Cammy'];list()};
+$('#clr').onclick=()=>{S.players=[];S.results={};list()};
+$('#go').onclick=()=>{
+ if($('#shf').checked)S.players.sort(()=>Math.random()-.5);
+ S.results={};S.started=true;show();$('#torneo').scrollIntoView({behavior:'smooth'})};
+$('#back').onclick=()=>{S.started=false;show();window.scrollTo({top:0,behavior:'smooth'})};
+$('#rst').onclick=()=>{S.results={};render()};
+function show(){$('#setup').hidden=S.started;$('#torneo').hidden=!S.started;if(S.started)render();save()}
+$('#tin').value=S.title;$('#gin').value=S.game;head();list();show();
+</script></body></html>
